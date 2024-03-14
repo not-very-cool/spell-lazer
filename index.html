@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="stylesheet.css">
+		<script type="text/javascript" src="script.js"></script>
+		<title>Laser Shoot Simulator</title>
+	</head>
+		<body onload="startGame()">
+		<h3 id = "score">Score: 0</h3>
+		<input type="button" value="Laser On" id="switch" onclick="laserOnOff()">
+		<input type="button" value="Randomize Target" id="randomize" onclick="pointer.randomize()"><br>
+		<input type="button" value="Show Grid" id="grid" onclick="showHideGrid()">
+		<input type="button" value="Hide Data" id="data" onclick="showHideData()">
+		<input type="button" value="Help" id="help" onclick="getHelp()"><br>
+		X Position (cm): <input type="text" id="xPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
+		Y Position (cm): <input type="text" id="yPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
+		Angle (degrees): <input type="text" id="angle" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
+	</body>
+</html>
