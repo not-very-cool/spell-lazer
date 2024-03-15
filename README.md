@@ -1,2 +1,4 @@
-# opticsSim
-This is a simulator for the optics event in science olympiad division C. Just download the project and open the HTML file to run it.
+# A modified version of Optics Sim
+
+The original version is at https://github.com/Sea-Snell/opticsSim.
+This version is modified so that the three barrier mirrors are randomized on page reload.
