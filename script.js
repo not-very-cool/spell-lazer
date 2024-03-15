@@ -388,7 +388,7 @@ function Pointer(y){
 
 	this.randomize = function(){
 		this.y = Math.random() * (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) - 10.0) + 10.0;
-		targetLabel.innerText = "Target: "+String((this.y-10)*8/5/0.7/myGameArea.canvas.width*56)+" cm"
+		targetLabel.innerText = "Target: "+String(round((35/2-(this.y-10)*8/5/0.7/myGameArea.canvas.width*35)*10)/10+15)+" cm"
 	}
 }
 
