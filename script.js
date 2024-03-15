@@ -67,11 +67,13 @@ function startGame(){
 	for (var i = 0; i < 5; i++){
 		mirrors.push(new Mirror(myGameArea.canvas.width * 0.7 + 10 + tempLength * 0.5, (i + 1) * tempLength * 0.5, Math.PI / 4.0, tempLength, 1));
 	}
+	let centermirror = 5+Math.floor(Math.random()*3);
+	console.log(centermirror);
 	for (var i = 5; i < 8; i++){
 		theta=Math.random()*2*Math.PI
 		h = 15*Math.abs(Math.cos(theta))+65*Math.abs(Math.sin(theta))
 		w = 65*Math.abs(Math.cos(theta))+15*Math.abs(Math.sin(theta))
-		mirrors.push(new Mirror(10+w+Math.random()*(myGameArea.canvas.width*0.7-10-2*w), 10+h+Math.random()*(myGameArea.canvas.width*0.7*5.0/8.0-10-2*h), theta, tempLength, i==7?-1:0));
+		mirrors.push(new Mirror(10+w+Math.random()*(myGameArea.canvas.width*0.7-10-2*w), i==centermirror?myGameArea.canvas.width*0.7*5.0/8.0*0.5+10+(Math.random()-1/2)*h:10+h+Math.random()*(myGameArea.canvas.width*0.7*5.0/8.0-10-2*h), theta, tempLength, i==7?-1:0));
 	}
 
 	pointer = new Pointer(myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5);
