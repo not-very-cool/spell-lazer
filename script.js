@@ -380,12 +380,12 @@ function Pointer(y){
 
 	this.update = function(){
 		myGameArea.context.save();
-		myGameArea.context.drawImage(this.image, this.x, this.y, this.length, this.width);
+		myGameArea.context.drawImage(this.image, this.x, this.y-this.width/2, this.length, this.width);
 		myGameArea.context.restore();
 	}
 
 	this.randomize = function(){
-		this.y = Math.random() * (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) - this.width) + 10.0;
+		this.y = Math.random() * (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) - 10.0) + 10.0;
 	}
 }
 
@@ -697,7 +697,7 @@ function updateGameArea() {
 
 	pointer.update();
 	finalizeScore();
-	scoreLabel.innerText = "Score: " + String(Math.round(score * 100.0) / 100.0);
+	scoreLabel.innerText = "Score: " + String(Math.round(score * 10.0) / 10.0);
 }
 
 
