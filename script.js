@@ -16,6 +16,7 @@ var isTyping;
 var pointer;
 var score;
 var scoreLabel;
+var targetLabel;
 var grid;
 var showGrid;
 var data;
@@ -38,6 +39,7 @@ function startGame(){
 	yPosBox = document.getElementById("yPos");
 	angleBox = document.getElementById("angle");
 	scoreLabel = document.getElementById("score");
+	targetLabel = document.getElementById("target")
 	grid = document.getElementById("grid");
 	data = document.getElementById("data");
 
@@ -386,6 +388,7 @@ function Pointer(y){
 
 	this.randomize = function(){
 		this.y = Math.random() * (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) - 10.0) + 10.0;
+		targetLabel.innerText = "Target: "+String((this.y-10)*8/5/0.7/myGameArea.canvas.width*56)+" cm"
 	}
 }
 
