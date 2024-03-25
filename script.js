@@ -20,6 +20,7 @@ var targetLabel;
 var grid;
 var showGrid;
 var data;
+var timer;
 
 function startGame(){
 	keys = {};
@@ -42,6 +43,7 @@ function startGame(){
 	targetLabel = document.getElementById("target")
 	grid = document.getElementById("grid");
 	data = document.getElementById("data");
+	timer = document.getElementById("timer");
 
 	document.getElementById("xPos").addEventListener("keydown", function(event) {
     	if (event.keyCode === 13) {
@@ -703,5 +705,27 @@ function updateGameArea() {
 	scoreLabel.innerText = "Score: " + String(Math.round(score * 10.0) / 10.0);
 }
 
+var interval = false;
 
+function startTimer() {
+	if (!interval) {
+		var start = Date.now();
+		setInterval(function() {
+			var time = start+240000-Date.now();
+			if (time > 0) {
+				timer.innerHTML = "Time: "+String(Math.floor(time/60000))+":"+(time/1000%60).toFixed(3).padStart(6, "0")
+			} else {
+				clearInterval(interval);
+				interval = null;
+			}
+		},1)
+	}
+}
+
+function stopTimer() {
+	if (interval) {
+		clearInterval(interval);
+		interval = null;
+	}
+}
 
