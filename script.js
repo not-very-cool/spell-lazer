@@ -64,6 +64,7 @@ function startGame(){
     	}
 	});
 
+	stopTimer();
 	myGameArea.start();
 
 	let theta;
@@ -706,26 +707,40 @@ function updateGameArea() {
 }
 
 var interval = false;
+var paused = false;
+var time;
+var start;
 
 function startTimer() {
 	if (!interval) {
-		var start = Date.now();
+		start = paused ? Date.now() - time : Date.now();
 		interval = setInterval(function() {
-			var time = start-Date.now()+240000;
+			time = start-Date.now()+240000;
 			if (time > 0) {
 				timer.innerHTML = "Time: "+String(Math.floor(time/60000))+":"+(time/1000%60).toFixed(3).padStart(6, "0")
 			} else {
 				clearInterval(interval);
 				interval = null;
 			}
-		},1)
+		},1);
+	}
+}
+
+function pauseTimer() {
+	if (interval) {
+		time = Date.now()-start;
+		paused = true;
+		clearInterval(interval);
+		interval = null;
 	}
 }
 
 function stopTimer() {
-	if (interval) {
+	if (interval || paused) {
 		clearInterval(interval);
 		interval = null;
+		timer.innerHTML = "Time: 4:00.000";
+		paused = false;
 	}
 }
 
