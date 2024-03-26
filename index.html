@@ -10,16 +10,16 @@
 		<h3 id = "timer">Time: 4:00.000</h3>
 		<input type="button" value="Start Timer" id="startTimer" onclick="startTimer()">
 		<input type="button" value="Pause Timer" id="pauseTimer" onclick="pauseTimer()">
-		<input type="button" value="Stop Timer" id="stopTimer" onclick="stopTimer()"><br>
+		<input type="button" value="Stop Timer" id="stopTimer" onclick="stopTimer()">
+		<input type="button" value="Reset" id="switch" onclick="startGame()"><br><br>
+		<h3 id = "score">Score: 0</h3>
 		<input type="button" value="Laser On" id="switch" onclick="laserOnOff()">
 		<input type="button" value="Randomize Target" id="randomize" onclick="pointer.randomize()">
 		<input type="button" value="Show Grid" id="grid" onclick="showHideGrid()">
 		<input type="button" value="Hide Data" id="data" onclick="showHideData()">
-		<input type="button" value="Help" id="help" onclick="getHelp()">
-		<input type="button" value="Reset" id="switch" onclick="startGame()"><br>
-		X Position (cm): <input type="text" id="xPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
+		<input type="button" value="Help" id="help" onclick="getHelp()"><br>
+		X Position (cm): <input type="text" id="xPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()">
 		Y Position (cm): <input type="text" id="yPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
 		Angle (degrees): <input type="text" id="angle" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
-		<h3 id = "score">Score: 0</h3>
 	</body>
 </html>
