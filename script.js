@@ -710,7 +710,7 @@ var interval = false;
 function startTimer() {
 	if (!interval) {
 		var start = Date.now();
-		setInterval(function() {
+		interval = setInterval(function() {
 			var time = start-Date.now()+240000;
 			if (time > 0) {
 				timer.innerHTML = "Time: "+String(Math.floor(time/60000))+":"+(time/1000%60).toFixed(3).padStart(6, "0")
