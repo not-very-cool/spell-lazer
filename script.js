@@ -761,7 +761,7 @@ function stopTimer() {
 function updateCode() {
 	code = "";
 	for (var i = 5; i < 8; i++){
-		code += mirrors[i].x+";"+mirrors[i].y+";"+mirrors[i].angle+";";
+		code += mirrors[i].x/myGameArea.canvas.width+";"+mirrors[i].y/myGameArea.canvas.width+";"+mirrors[i].angle+";";
 	}
 	codeBox.value = code + pointer.gety();
 }
@@ -779,8 +779,8 @@ function setCode() {
 		m = mirrors[5+~~(i/3)]
 		n = parseFloat(code[i])
 		switch (i % 3) {
-			case 0: m.x = n
-			case 1: m.y = n
+			case 0: m.x = n*myGameArea.canvas.width
+			case 1: m.y = n*myGameArea.canvas.width
 			case 2: m.angle = n
 		}
 	}
