@@ -21,6 +21,8 @@ var grid;
 var showGrid;
 var data;
 var timer;
+var codeBox;
+var code;
 
 function startGame(){
 	keys = {};
@@ -39,27 +41,34 @@ function startGame(){
 	xPosBox = document.getElementById("xPos");
 	yPosBox = document.getElementById("yPos");
 	angleBox = document.getElementById("angle");
+	codeBox = document.getElementById("code");
 	scoreLabel = document.getElementById("score");
-	targetLabel = document.getElementById("target")
+	targetLabel = document.getElementById("target");
 	grid = document.getElementById("grid");
 	data = document.getElementById("data");
 	timer = document.getElementById("timer");
 
-	document.getElementById("xPos").addEventListener("keydown", function(event) {
-    	if (event.keyCode === 13) {
+	xPosBox.addEventListener("keydown", function(event) {
+    	if (event.code === "Enter") {
     		setXPos();
     		xPosBox.select();
     	}
 	});
-	document.getElementById("yPos").addEventListener("keydown", function(event) {
-    	if (event.keyCode === 13) {
+	yPosBox.addEventListener("keydown", function(event) {
+    	if (event.code === "Enter") {
     		setYPos();
     		yPosBox.select();
     	}
 	});
-	document.getElementById("angle").addEventListener("keydown", function(event) {
-    	if (event.keyCode === 13) {
+	angleBox.addEventListener("keydown", function(event) {
+    	if (event.code === "Enter") {
     		setAngle();
+    		angleBox.select();
+    	}
+	});
+	codeBox.addEventListener("keydown", function(event) {
+    	if (event.code === "Enter") {
+    		setCode();
     		angleBox.select();
     	}
 	});
@@ -73,7 +82,6 @@ function startGame(){
 		mirrors.push(new Mirror(myGameArea.canvas.width * 0.7 + 10 + tempLength * 0.5, (i + 1) * tempLength * 0.5, Math.PI / 4.0, tempLength, 1));
 	}
 	let centermirror = 5+Math.floor(Math.random()*3);
-	console.log(centermirror);
 	for (var i = 5; i < 8; i++){
 		theta=Math.random()*2*Math.PI
 		h = 15*Math.abs(Math.cos(theta))+65*Math.abs(Math.sin(theta))
@@ -83,6 +91,7 @@ function startGame(){
 
 	pointer = new Pointer(myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5);
 	pointer.randomize();
+	updateCode();
 }
 
 function setXPos(){
@@ -320,9 +329,11 @@ myGameArea.canvas.onmousedown = function(e){
 }
 
 function setText(){
-	xPosBox.value = String(Math.round((mirrors[selected].x - 10.0) * (56.0 / (myGameArea.canvas.width * 0.7)) * 100.0) / 100.0);
-	yPosBox.value = String(Math.round(((10.0 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) - mirrors[selected].y) * (35.0 / (myGameArea.canvas.width * 0.7 * (5.0 / 8.0))) * 100.0) / 100.0);
-	angleBox.value = String(Math.round((360.0 - (mirrors[selected].angle) * (180.0 / Math.PI)) * 100.0) / 100.0);
+	if (selected != null) {
+		xPosBox.value = String(Math.round((mirrors[selected].x - 10.0) * (56.0 / (myGameArea.canvas.width * 0.7)) * 100.0) / 100.0);
+		yPosBox.value = String(Math.round(((10.0 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) - mirrors[selected].y) * (35.0 / (myGameArea.canvas.width * 0.7 * (5.0 / 8.0))) * 100.0) / 100.0);
+		angleBox.value = String(Math.round((360.0 - (mirrors[selected].angle) * (180.0 / Math.PI)) * 100.0) / 100.0);
+	}
 }
 
 function finalizeScore(){
@@ -389,9 +400,12 @@ function Pointer(y){
 		myGameArea.context.restore();
 	}
 
+	this.sety = function(y){this.y=myGameArea.canvas.width/80*(y+5/2)+10}
+	this.gety = function(){return (this.y-10)*80/myGameArea.canvas.width-5/2}
+
 	this.randomize = function(){
-		this.y = Math.random() * (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) - 10.0) + 10.0;
-		targetLabel.innerText = "Target: "+(15-(35/2-(this.y-10)*8/5/0.7/myGameArea.canvas.width*35)).toFixed(1)+" cm"
+		this.sety(Math.floor(Math.random()*300)/10);
+		targetLabel.innerText = "Target: "+this.gety().toFixed(1)+" cm";
 	}
 }
 
@@ -744,3 +758,31 @@ function stopTimer() {
 	}
 }
 
+function updateCode() {
+	code = "";
+	for (var i = 5; i < 8; i++){
+		code += mirrors[i].x+";"+mirrors[i].y+";"+mirrors[i].angle+";";
+	}
+	codeBox.value = code + pointer.gety();
+}
+
+function copyCode() {
+	navigator.clipboard.writeText(codeBox.value)
+}
+
+function setCode() {
+	var m;
+	var n;
+	code = codeBox.value.split(";");
+	if (code.length < 10 || !/^[\d;\.]+$/.test(codeBox.value)) {alert("invalid code!");return}
+	for (var i = 0; i < 9; i++) {
+		m = mirrors[5+~~(i/3)]
+		n = parseFloat(code[i])
+		switch (i % 3) {
+			case 0: m.x = n
+			case 1: m.y = n
+			case 2: m.angle = n
+		}
+	}
+	pointer.sety(code[9]);
+}

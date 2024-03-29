@@ -11,7 +11,10 @@
 		<input type="button" value="Start Timer" id="startTimer" onclick="startTimer()">
 		<input type="button" value="Pause Timer" id="pauseTimer" onclick="pauseTimer()">
 		<input type="button" value="Stop Timer" id="stopTimer" onclick="stopTimer()">
-		<input type="button" value="Reset" id="switch" onclick="startGame()"><br><br>
+		<input type="button" value="Reset" id="switch" onclick="startGame()"><br>
+		LSS Code: <input type="text" id="code" onfocusout="isTyping = false;" onfocusin="textIn()" onclick="this.select()">
+		<input type="button" value="Update" id="updateCode" onclick="updateCode()">
+		<input type="button" value="Copy" id="copyCode" onclick="copyCode()"><br><br>
 		<h3 id = "score">Score: 0</h3>
 		<input type="button" value="Laser On" id="switch" onclick="laserOnOff()">
 		<input type="button" value="Randomize Target" id="randomize" onclick="pointer.randomize()">
@@ -21,5 +24,6 @@
 		X Position (cm): <input type="text" id="xPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()">
 		Y Position (cm): <input type="text" id="yPos" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
 		Angle (degrees): <input type="text" id="angle" onfocusout="textOut()" onfocusin="textIn()" onclick="this.select()"><br>
+
 	</body>
 </html>
