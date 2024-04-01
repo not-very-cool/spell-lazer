@@ -784,5 +784,5 @@ function setCode() {
 			case 2: m.angle = n
 		}
 	}
-	pointer.sety(code[9]);
+	pointer.sety(parseFloat(code[9]));
 }
