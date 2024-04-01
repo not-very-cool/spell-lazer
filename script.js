@@ -89,7 +89,7 @@ function startGame(){
 		mirrors.push(new Mirror(10+w+Math.random()*(myGameArea.canvas.width*0.7-10-2*w), i==centermirror?myGameArea.canvas.width*0.7*5.0/8.0*0.5+10+(Math.random()-1/2)*h:10+h+Math.random()*(myGameArea.canvas.width*0.7*5.0/8.0-10-2*h), theta, tempLength, i==7?-1:0));
 	}
 
-	pointer = new Pointer(myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5);
+	pointer = new Pointer();
 	pointer.randomize();
 	updateCode();
 }
@@ -385,27 +385,27 @@ function Mirror(x, y, angle, length, numMirrors){
 	}
 }
 
-function Pointer(y){
+function Pointer(){
 	this.length = 25;
 	this.width = 20;
 	this.x = 10 + myGameArea.canvas.width * 0.7 - this.length;
-	this.y = y;
-
+	this.y = 15;
 	this.image = new Image();
 	this.image.src = "pointer.png";
 
+	this.sety(height) {
+		this.y = height;
+		targetLabel.innerText = "Target: "+height.toFixed(1)+" cm";
+	}
+
 	this.update = function(){
 		myGameArea.context.save();
-		myGameArea.context.drawImage(this.image, this.x, this.y-this.width/2, this.length, this.width);
+		myGameArea.context.drawImage(this.image, this.x, myGameArea.canvas.width/80*(this.y+5/2)+10-this.width/2, this.length, this.width);
 		myGameArea.context.restore();
 	}
 
-	this.sety = function(y){this.y=myGameArea.canvas.width/80*(y+5/2)+10}
-	this.gety = function(){return (this.y-10)*80/myGameArea.canvas.width-5/2}
-
 	this.randomize = function(){
 		this.sety(Math.floor(Math.random()*300)/10);
-		targetLabel.innerText = "Target: "+this.gety().toFixed(1)+" cm";
 	}
 }
 
