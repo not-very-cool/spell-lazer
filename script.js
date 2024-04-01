@@ -763,7 +763,7 @@ function updateCode() {
 	for (var i = 5; i < 8; i++){
 		code += mirrors[i].x/myGameArea.canvas.width+";"+mirrors[i].y/myGameArea.canvas.width+";"+mirrors[i].angle+";";
 	}
-	codeBox.value = code + pointer.gety();
+	codeBox.value = code + pointer.y;
 }
 
 function copyCode() {
