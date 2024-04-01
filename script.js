@@ -393,7 +393,7 @@ function Pointer(){
 	this.image = new Image();
 	this.image.src = "pointer.png";
 
-	this.sety(height) {
+	this.sety = function(height) {
 		this.y = height;
 		targetLabel.innerText = "Target: "+height.toFixed(1)+" cm";
 	}
