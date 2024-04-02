@@ -23,6 +23,8 @@ var data;
 var timer;
 var codeBox;
 var code;
+var gh;
+var gw;
 
 function startGame(){
 	keys = {};
@@ -76,17 +78,20 @@ function startGame(){
 	stopTimer();
 	myGameArea.start();
 
+	gw = myGameArea.canvas.width * 0.7;
+	gh = gw * 5/8;
+
 	let theta;
-	var tempLength = myGameArea.canvas.width * 0.7 * (6.5 / 56.0);
+	var tempLength = gw * (6.5 / 56.0);
 	for (var i = 0; i < 5; i++){
-		mirrors.push(new Mirror(myGameArea.canvas.width * 0.7 + 10 + tempLength * 0.5, (i + 1) * tempLength * 0.5, Math.PI / 4.0, tempLength, 1));
+		mirrors.push(new Mirror(gw + 10 + tempLength * 0.5, (i + 1) * tempLength * 0.5, Math.PI / 4.0, tempLength, 1));
 	}
 	let centermirror = 5+Math.floor(Math.random()*3);
 	for (var i = 5; i < 8; i++){
 		theta=Math.random()*2*Math.PI
 		h = 15*Math.abs(Math.cos(theta))+65*Math.abs(Math.sin(theta))
 		w = 65*Math.abs(Math.cos(theta))+15*Math.abs(Math.sin(theta))
-		mirrors.push(new Mirror(10+w+Math.random()*(myGameArea.canvas.width*0.7-10-2*w), i==centermirror?myGameArea.canvas.width*0.7*5.0/8.0*0.5+10+(Math.random()-1/2)*h:10+h+Math.random()*(myGameArea.canvas.width*0.7*5.0/8.0-10-2*h), theta, tempLength, i==7?-1:0));
+		mirrors.push(new Mirror(10+w+Math.random()*(gw-10-2*w), i==centermirror?gh/2+10+(Math.random()-1/2)*h:10+h+Math.random()*(gh-10-2*h), theta, tempLength, i==7?-1:0));
 	}
 
 	pointer = new Pointer();
@@ -98,7 +103,7 @@ function setXPos(){
 	xPosBox.select();
 	var toFloat = parseFloat(xPosBox.value);
     if (toFloat && selected != null){
-		mirrors[selected].x = toFloat * ((myGameArea.canvas.width * 0.7) / 56.0) + 10.0;
+		mirrors[selected].x = toFloat * (gw / 56) + 10;
     }
     setText();
 }
@@ -107,7 +112,7 @@ function setYPos(){
 	yPosBox.select();
 	var toFloat = parseFloat(yPosBox.value);
     if (toFloat && selected != null){
-		mirrors[selected].y = -toFloat * ((myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) / 35.0) + ((10.0 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)));
+		mirrors[selected].y = -toFloat * (gh/35) + (10.0+gh);
     }
     setText();
 }
@@ -330,15 +335,15 @@ myGameArea.canvas.onmousedown = function(e){
 
 function setText(){
 	if (selected != null) {
-		xPosBox.value = String(Math.round((mirrors[selected].x - 10.0) * (56.0 / (myGameArea.canvas.width * 0.7)) * 100.0) / 100.0);
-		yPosBox.value = String(Math.round(((10.0 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) - mirrors[selected].y) * (35.0 / (myGameArea.canvas.width * 0.7 * (5.0 / 8.0))) * 100.0) / 100.0);
+		xPosBox.value = ((mirrors[selected].x - 10) * (56 / gw)).toFixed(2)
+		yPosBox.value = String(Math.round(((10 + gh) - mirrors[selected].y) * (35.0 / gh) * 100.0) / 100.0);
 		angleBox.value = String(Math.round((360.0 - (mirrors[selected].angle) * (180.0 / Math.PI)) * 100.0) / 100.0);
 	}
 }
 
 function finalizeScore(){
 	var lastPoint = points[points.length - 1];
-	score += Math.max(25.0 - ((Math.abs(lastPoint[1] - pointer.y) * (350.0 / (myGameArea.canvas.width * 0.7 * (5.0 / 8.0))) + Math.abs(lastPoint[0] - (myGameArea.canvas.width * 0.7 + 10.0)) * (560.0 / (myGameArea.canvas.width * 0.7))) / 10.0), 0.0);
+	score += Math.max(25.0 - (Math.abs((lastPoint[1]-10)*35/gh-5/2 - pointer.y) + Math.abs(lastPoint[0] - pointer.x)), 0.0);
 }
 
 myGameArea.canvas.onmouseup = function(e){
@@ -388,7 +393,7 @@ function Mirror(x, y, angle, length, numMirrors){
 function Pointer(){
 	this.length = 25;
 	this.width = 20;
-	this.x = 10 + myGameArea.canvas.width * 0.7 - this.length;
+	this.x = 10 + gw;
 	this.y = 15;
 	this.image = new Image();
 	this.image.src = "pointer.png";
@@ -400,7 +405,7 @@ function Pointer(){
 
 	this.update = function(){
 		myGameArea.context.save();
-		myGameArea.context.drawImage(this.image, this.x, myGameArea.canvas.width/80*(this.y+5/2)+10-this.width/2, this.length, this.width);
+		myGameArea.context.drawImage(this.image, this.x-this.length, gh/35*(this.y+5/2)+10-this.width/2, this.length, this.width);
 		myGameArea.context.restore();
 	}
 
@@ -411,7 +416,7 @@ function Pointer(){
 
 function calculatePoints(){
 	var angles = [0.0];
-	points = [[10, 10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5]];
+	points = [[10, 10 + gh/2]];
 	var lastMirrors = [-1];
 
 	if (laserOn == false){
@@ -424,7 +429,7 @@ function calculatePoints(){
 		var laserAngle = angles[angles.length - 1];
 		var laserSlope = Math.tan(laserAngle);
 
-		var minDistance = 100000000000000000000.0;
+		var minDistance = 1000000;
 		var collidesWith = null;
 		var collisionX = null;
 		var collisionY = null;
@@ -541,17 +546,17 @@ function calculatePoints(){
 			}
 		}
 
-		var farWallY = laserSlope * ((myGameArea.canvas.width * 0.7 + 10.0) - laserPointX) + laserPointY;
-		if (farWallY >= 10.0 && farWallY <= myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0 && checkDirection(laserPointX, laserPointY, myGameArea.canvas.width * 0.7 + 10.0, farWallY, laserAngle)){
-			var farWallDistance = Math.sqrt(Math.pow(laserPointY - farWallY, 2.0) + Math.pow(laserPointX - (myGameArea.canvas.width * 0.7 + 10.0), 2.0));
+		var farWallY = laserSlope * ((gw + 10.0) - laserPointX) + laserPointY;
+		if (farWallY >= 10.0 && farWallY <= gh + 10.0 && checkDirection(laserPointX, laserPointY, gw + 10.0, farWallY, laserAngle)){
+			var farWallDistance = Math.sqrt(Math.pow(laserPointY - farWallY, 2.0) + Math.pow(laserPointX - (gw + 10.0), 2.0));
 			if (farWallDistance < minDistance){
-				points.push([myGameArea.canvas.width * 0.7 + 10.0, farWallY]);
+				points.push([gw + 10.0, farWallY]);
 				break;
 			}
 		}
 
 		var nearWallY = laserSlope * (10.0 - laserPointX) + laserPointY;
-		if (nearWallY >= 10.0 && nearWallY <= myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0 && checkDirection(laserPointX, laserPointY, 10.0, nearWallY, laserAngle) && points.length != 1){
+		if (nearWallY >= 10.0 && nearWallY <= gh + 10.0 && checkDirection(laserPointX, laserPointY, 10.0, nearWallY, laserAngle) && points.length != 1){
 			var nearWallDistance = Math.sqrt(Math.pow(laserPointY - nearWallY, 2.0) + Math.pow(laserPointX - 10.0, 2.0));
 			if (nearWallDistance < minDistance){
 				points.push([10.0, nearWallY]);
@@ -560,7 +565,7 @@ function calculatePoints(){
 		}
 
 		var topWallX = (10 - laserPointY) / laserSlope + laserPointX;
-		if (topWallX >= 0.0 && topWallX <= myGameArea.canvas.width * 0.7 + 10.0 && checkDirection(laserPointX, laserPointY, topWallX, 10.0, laserAngle)){
+		if (topWallX >= 0.0 && topWallX <= gw + 10.0 && checkDirection(laserPointX, laserPointY, topWallX, 10.0, laserAngle)){
 			var topWallDistance = Math.sqrt(Math.pow(laserPointY - 10.0, 2.0) + Math.pow(laserPointX - topWallX, 2.0));
 			if (topWallDistance < minDistance){
 				points.push([topWallX, 10.0]);
@@ -568,11 +573,11 @@ function calculatePoints(){
 			}	
 		}
 
-		var bottomWallX = ((myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0) - laserPointY) / laserSlope + laserPointX;
-		if (bottomWallX >= 0.0 && bottomWallX <= myGameArea.canvas.width * 0.7 + 10.0 && checkDirection(laserPointX, laserPointY, bottomWallX, myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0, laserAngle)){
-			var bottomWallDistance = Math.sqrt(Math.pow(laserPointY - (myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0), 2.0) + Math.pow(laserPointX - bottomWallX, 2.0));
+		var bottomWallX = ((gh + 10.0) - laserPointY) / laserSlope + laserPointX;
+		if (bottomWallX >= 0.0 && bottomWallX <= gw + 10.0 && checkDirection(laserPointX, laserPointY, bottomWallX, gh + 10.0, laserAngle)){
+			var bottomWallDistance = Math.sqrt(Math.pow(laserPointY - (gh + 10.0), 2.0) + Math.pow(laserPointX - bottomWallX, 2.0));
 			if (bottomWallDistance < minDistance){
-				points.push([bottomWallX, myGameArea.canvas.width * 0.7 * (5.0 / 8.0) + 10.0]);
+				points.push([bottomWallX, gh + 10.0]);
 				break;
 			}	
 		}
@@ -660,8 +665,8 @@ function setGrid(){
 		myGameArea.context.beginPath();
 		myGameArea.context.lineWidth = "1";
 		myGameArea.context.strokeStyle = "grey";
-		myGameArea.context.moveTo((10 + myGameArea.canvas.width * 0.7) * (i / 56.0), 10.0);
-		myGameArea.context.lineTo((10 + myGameArea.canvas.width * 0.7) * (i / 56.0), 10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0));
+		myGameArea.context.moveTo((10 + gw)*i/56, 10);
+		myGameArea.context.lineTo((10 + gw)*i/56, 10 + gh);
 		myGameArea.context.stroke();
 	}
 
@@ -669,8 +674,8 @@ function setGrid(){
 		myGameArea.context.beginPath();
 		myGameArea.context.lineWidth = "1";
 		myGameArea.context.strokeStyle = "grey";
-		myGameArea.context.moveTo(10.0, (10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) * (i / 35.0));
-		myGameArea.context.lineTo(10 + myGameArea.canvas.width * 0.7, (10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0)) * (i / 35.0));
+		myGameArea.context.moveTo(10.0, (10 + gh)*i/35);
+		myGameArea.context.lineTo(10 + gw, (10 + gh)*i/35);
 		myGameArea.context.stroke();
 	}
 }
@@ -761,7 +766,7 @@ function stopTimer() {
 function updateCode() {
 	code = "";
 	for (var i = 5; i < 8; i++){
-		code += mirrors[i].x/myGameArea.canvas.width+";"+mirrors[i].y/myGameArea.canvas.width+";"+mirrors[i].angle+";";
+		code += mirrors[i].x/gw+";"+mirrors[i].y/gw+";"+mirrors[i].angle+";";
 	}
 	codeBox.value = code + pointer.y;
 }
@@ -779,10 +784,14 @@ function setCode() {
 		m = mirrors[5+~~(i/3)]
 		n = parseFloat(code[i])
 		switch (i % 3) {
-			case 0: m.x = n*myGameArea.canvas.width
-			case 1: m.y = n*myGameArea.canvas.width
+			case 0: m.x = n*gw
+			case 1: m.y = n*gw
 			case 2: m.angle = n
 		}
 	}
 	pointer.sety(parseFloat(code[9]));
+}
+
+function copyTimer() {
+	navigator.clipboard.writeText(timer.innerHTML.substring(5))
 }
