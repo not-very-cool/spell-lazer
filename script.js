@@ -97,6 +97,7 @@ function startGame(){
 	pointer = new Pointer();
 	pointer.randomize();
 	updateCode();
+	startTimer();
 }
 
 function setXPos(){
@@ -738,8 +739,11 @@ function startTimer() {
 			if (time > 0) {
 				timer.innerHTML = "Time: "+String(Math.floor(time/60000))+":"+(time/1000%60).toFixed(3).padStart(6, "0")
 			} else {
+				var jumpscare = new Audio('SANS.mp3');
+				jumpscare.play();
 				clearInterval(interval);
 				interval = null;
+				startGame();
 			}
 		},1);
 	}
