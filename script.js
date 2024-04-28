@@ -21,6 +21,9 @@ var grid;
 var showGrid;
 var data;
 var timer;
+var startTimerButton;
+var stopTimerButton;
+var pauseTimerButton;
 var codeBox;
 var code;
 var gh;
@@ -49,6 +52,9 @@ function startGame(){
 	grid = document.getElementById("grid");
 	data = document.getElementById("data");
 	timer = document.getElementById("timer");
+	startTimerButton = document.getElementById("startTimer");
+	stopTimerButton = document.getElementById("stopTimer");
+	pauseTimerButton = document.getElementById("pauseTimer");
 
 	xPosBox.addEventListener("keydown", function(event) {
     	if (event.code === "Enter") {
@@ -97,7 +103,6 @@ function startGame(){
 	pointer = new Pointer();
 	pointer.randomize();
 	updateCode();
-	startTimer();
 }
 
 function setXPos(){
@@ -741,11 +746,12 @@ function startTimer() {
 			} else {
 				var jumpscare = new Audio('SANS.mp3');
 				jumpscare.play();
-				clearInterval(interval);
-				interval = null;
-				startGame();
+				stopTimer();
 			}
 		},1);
+		startTimerButton.style.display = "none"
+		stopTimerButton.style.display = "inline-block"
+		pauseTimerButton.style.display = "inline-block"
 	}
 }
 
@@ -755,6 +761,9 @@ function pauseTimer() {
 		paused = true;
 		clearInterval(interval);
 		interval = null;
+		startTimerButton.style.display = "inline-block"
+		stopTimerButton.style.display = "inline-block"
+		pauseTimerButton.style.display = "none"
 	}
 }
 
@@ -765,6 +774,9 @@ function stopTimer() {
 		timer.innerHTML = "Time: 4:00.000";
 		paused = false;
 	}
+	startTimerButton.style.display = "inline-block"
+	stopTimerButton.style.display = "none"
+	pauseTimerButton.style.display = "none"
 }
 
 function updateCode() {
