@@ -811,3 +811,7 @@ function setCode() {
 function copyTimer() {
 	navigator.clipboard.writeText(timer.innerHTML.substring(5))
 }
+
+function setTarget() {
+	pointer.sety(parseFloat(prompt("Set target to:")))
+}
