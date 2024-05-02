@@ -813,5 +813,6 @@ function copyTimer() {
 }
 
 function setTarget() {
-	pointer.sety(parseFloat(prompt("Set target to:")))
+	var setTo = parseFloat(prompt("Set target to:"))
+	if (!isNaN(setTo)) {pointer.sety(setTo)}
 }
