@@ -16,7 +16,14 @@
 		<input type="button" value="Update" id="updateCode" onclick="updateCode()">
 		<input type="button" value="Copy" id="copyCode" onclick="copyCode()">
 		<input type="button" value="Reset" id="reset" onclick="startGame()"><br><br>
-		<h3 id = "score">Score: 0</h3>
+		<div>
+			<h3 style="white-space:nowrap;overflow: hidden; text-overflow: ellipsis;
+			float: left; padding-right: 6px;" id="minScoreLabel">Minimum Score: 0</h3>
+			<input type="button" value="Show Score Breakdown" id="breakdownToggle" onclick="breakdownToggle()" style="float:left;">
+		</div><br>
+		
+		<div id="breakdown" style="display: none;"><p id = "score"></p></div>
+		<br>
 		<input type="button" value="Laser On" id="switch" onclick="laserOnOff()">
 		<input type="button" value="Randomize Target" id="randomize" onclick="pointer.randomize()">
 		<input type="button" value="Show Grid" id="grid" onclick="showHideGrid()">

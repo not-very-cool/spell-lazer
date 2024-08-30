@@ -15,7 +15,11 @@ var angleBox;
 var isTyping;
 var pointer;
 var score;
+var tls;
 var scoreLabel;
+var minScoreLabel;
+var breakdownToggleButton;
+var breakdownLabel;
 var targetLabel;
 var grid;
 var showGrid;
@@ -39,7 +43,9 @@ function startGame(){
 	clicked = false;
 	laserOn = false;
 	isTyping = false;
-	score = 0.0;
+	bs = 0;
+	tls = 0;
+	acs = 0.0;
 	showGrid = false;
 
 	laserButton = document.getElementById("switch");
@@ -48,6 +54,9 @@ function startGame(){
 	angleBox = document.getElementById("angle");
 	codeBox = document.getElementById("code");
 	scoreLabel = document.getElementById("score");
+	minScoreLabel = document.getElementById("minScoreLabel");
+	breakdownToggleButton = document.getElementById("breakdownToggle");
+	breakdownLabel = document.getElementById("breakdown");
 	targetLabel = document.getElementById("target");
 	grid = document.getElementById("grid");
 	data = document.getElementById("data");
@@ -349,7 +358,7 @@ function setText(){
 
 function finalizeScore(){
 	var lastPoint = points[points.length - 1];
-	score += Math.max(25.0 - (Math.abs((lastPoint[1]-10)*35/gh-5/2 - pointer.y) + Math.abs(lastPoint[0] - pointer.x)), 0.0);
+	acs = Math.max(25.0 - (Math.abs((lastPoint[1]-10)*35/gh-5/2 - pointer.y) + Math.abs(lastPoint[0] - pointer.x)), 0.0);
 }
 
 myGameArea.canvas.onmouseup = function(e){
@@ -585,7 +594,7 @@ function calculatePoints(){
 			if (bottomWallDistance < minDistance){
 				points.push([bottomWallX, gh + 10.0]);
 				break;
-			}	
+			}
 		}
 		points.push([collisionX, collisionY]);
 
@@ -613,17 +622,6 @@ function calculatePoints(){
 		}
 
 		var alreadyHit = false;
-		if (mirrors[collidesWith].numMirrors == 1 || mirrors[collidesWith].numMirrors == 2){
-			for (var i = 0; i < lastMirrors.length; i++){
-				if (collidesWith == lastMirrors[i]){
-					alreadyHit = true;
-					break;
-				}
-			}
-			if (alreadyHit == false){
-				score += 4.0;
-			}
-		}
 		if (mirrors[collidesWith].numMirrors == -1){
 			for (var i = 0; i < lastMirrors.length; i++){
 				if (collidesWith == lastMirrors[i]){
@@ -632,12 +630,26 @@ function calculatePoints(){
 				}
 			}
 			if (alreadyHit == false){
-				score += 5.0;
+				bs = 10.0;
 			}
 		}
 
 		angles.push(finalAngle);
 		lastMirrors.push(collidesWith);
+
+	}
+	for(var i = 1; i < points.length-1; i++) {
+		if (lastMirrors.indexOf(lastMirrors[i]) == i) {
+			if (points[i][0] < 10+gw/3 == points[i+1][0] > 10+gw/3) {
+				tls++;
+			} if(points[i][0] < 10+gw*2/3 == points[i+1][0] > 10+gw*2/3) {
+				tls++;
+			} if (points[i][1] < 10+gh/3 == points[i+1][1] > 10+gh/3) {
+				tls++;
+			} if(points[i][1] < 10+gh*2/3 == points[i+1][1] > 10+gh*2/3) {
+				tls++;
+			}
+		}
 	}
 }
 
@@ -689,6 +701,8 @@ function setGrid(){
 function updateGameArea() {
     myGameArea.clear();
     score = 0.0;
+	tls = 0;
+	bs = 0;
     keyActions();
 
     myGameArea.canvas.width = window.innerWidth * 0.7;
@@ -697,15 +711,38 @@ function updateGameArea() {
     myGameArea.context.beginPath();
 	myGameArea.context.lineWidth = "4";
 	myGameArea.context.strokeStyle = "black";
-	myGameArea.context.rect(10, 10, myGameArea.canvas.width * 0.7, myGameArea.canvas.width * 0.7 * (5.0 / 8.0));
+	myGameArea.context.rect(10, 10, gw, gh);
+	myGameArea.context.stroke();
+
+	myGameArea.context.beginPath();
+	myGameArea.context.lineWidth = "2";
+	myGameArea.context.strokeStyle = "grey";
+	myGameArea.context.moveTo(10, 10 + gh/2);
+	myGameArea.context.lineTo(10 + gw, 10 + gh/2);
 	myGameArea.context.stroke();
 
 	myGameArea.context.beginPath();
 	myGameArea.context.lineWidth = "1";
-	myGameArea.context.strokeStyle = "grey";
-	myGameArea.context.moveTo(10, 10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5);
-	myGameArea.context.lineTo(10 + myGameArea.canvas.width * 0.7, 10 + myGameArea.canvas.width * 0.7 * (5.0 / 8.0) * 0.5);
+	myGameArea.context.strokeStyle = "green";
+	myGameArea.context.moveTo(10, 10 + gh/3);
+	myGameArea.context.lineTo(10 + gw, 10 + gh/3);
 	myGameArea.context.stroke();
+
+	myGameArea.context.beginPath();
+	myGameArea.context.moveTo(10, 10 + gh*2/3);
+	myGameArea.context.lineTo(10 + gw, 10 + gh*2/3);
+	myGameArea.context.stroke();
+
+	myGameArea.context.beginPath();
+	myGameArea.context.moveTo(10 + gw/3, 10);
+	myGameArea.context.lineTo(10 + gw/3, 10 + gh);
+	myGameArea.context.stroke();
+
+	myGameArea.context.beginPath();
+	myGameArea.context.moveTo(10 + gw*2/3, 10);
+	myGameArea.context.lineTo(10 + gw*2/3, 10 + gh);
+	myGameArea.context.stroke();
+
 
 	if (showGrid){
 		setGrid();
@@ -728,7 +765,8 @@ function updateGameArea() {
 
 	pointer.update();
 	finalizeScore();
-	scoreLabel.innerText = "Score: " + String(Math.round(score * 10.0) / 10.0);
+	scoreLabel.innerText = "Accuracy: +" + String(Math.round(acs * 10) / 10) + "pts; Barrier: +" + String(bs) + "pts; Lines: +" + String(tls) + "pts";
+	minScoreLabel.innerText = "Minimum Score: " + String(Math.round((acs+bs+tls*20/18) * 10) / 10);
 }
 
 var interval = false;
@@ -809,5 +847,16 @@ function setCode() {
 }
 
 function copyTimer() {
-	navigator.clipboard.writeText(timer.innerHTML.substring(5))
+	navigator.clipboard.writeText(timer.innerHTML.substring(5));
+}
+
+function breakdownToggle() {
+	if (breakdownLabel.style.display == "none") {
+		breakdownLabel.style.display = "block";
+		breakdownToggleButton.value = "Hide Score Breakdown"
+	} else {
+		breakdownLabel.style.display = "none";
+		breakdownToggleButton.value = "Show Score Breakdown"
+	}
+	
 }
