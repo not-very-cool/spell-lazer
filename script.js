@@ -859,4 +859,10 @@ function breakdownToggle() {
 		breakdownToggleButton.value = "Show Score Breakdown"
 	}
 	
+	navigator.clipboard.writeText(timer.innerHTML.substring(5))
+}
+
+function setTarget() {
+	var setTo = parseFloat(prompt("Set target to:"))
+	if (!isNaN(setTo)) {pointer.sety(setTo)}
 }
